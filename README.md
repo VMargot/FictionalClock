@@ -83,11 +83,10 @@ print(f"Fictional Time: {fictif_time}")
 ## **Folder Structure**
 
 📂 FictionalClock <br>
-├── 📄 main.py          # Main Streamlit application<br>
-├── 📄 clock_logic.py   # Core logic for time adjustments<br>
-├── 📂 assets           # Any static assets (e.g., images)<br>
-├── 📄 requirements.txt # Python dependencies<br>
-└── 📄 README.md        # Project documentation<br>
+├── 📄 main.py &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; # Main Streamlit application<br>
+├── 📄 clock_logic.py &nbsp; &nbsp; &nbsp; # Core logic for time adjustments<br>
+├── 📄 requirements.txt &nbsp; # Python dependencies<br>
+└── 📄 README.md &nbsp; &nbsp; &nbsp; &nbsp; # Project documentation<br>
 
 ---
 
