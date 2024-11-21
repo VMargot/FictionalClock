@@ -23,7 +23,8 @@ This Python project simulates a **fictional clock** where the sun invariably ris
   - `pandas`
   - `numpy`
   - `suntime`
-  - `math`
+  - `pytz`
+  - `timezonefinder`
 
 Install the dependencies using:
 
