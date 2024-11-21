@@ -1,0 +1,7 @@
+streamlit==1.40.1
+matplotlib
+suntime==1.3.2
+numpy==2.1.3
+pandas==2.2.3
+jupyter==1.1.1
+matplotlib==3.9.2
