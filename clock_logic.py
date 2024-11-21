@@ -1,8 +1,30 @@
 import math
+from datetime import datetime, timedelta
+
 import matplotlib.pyplot as plt
 import numpy as np
-from datetime import datetime, timedelta
-from suntime import Sun 
+import pytz
+from suntime import Sun
+from timezonefinder import TimezoneFinder
+
+
+def get_timezone_offset(latitude, longitude):
+    """
+    Obtenir le fuseau horaire GMT/UTC à partir de la latitude et de la longitude.
+    """
+    # Trouver le fuseau horaire
+    tf = TimezoneFinder()
+    timezone_str = tf.timezone_at(lat=latitude, lng=longitude)
+
+    if timezone_str is None:
+        return None, None
+
+    # Récupérer le décalage UTC
+    timezone = pytz.timezone(timezone_str)
+    now = datetime.now(timezone)
+    utc_offset = now.utcoffset().total_seconds() / 3600  # Décalage en heures
+
+    return timezone, utc_offset
 
 
 def get_day_night_durations(date, latitude):
@@ -17,15 +39,19 @@ def get_day_night_durations(date, latitude):
     night_duration = 24 - day_duration
     return day_duration, night_duration
 
-def second_duration(current_time, day_duration, night_duration, latitude, longitude):
+
+def second_duration(current_time, day_duration, night_duration, latitude,
+                    longitude, utc_offset):
     sun = Sun(latitude, longitude)
     today_sunrise = sun.get_local_sunrise_time(current_time)
     today_sunset = sun.get_local_sunset_time(current_time + timedelta(days=1))
 
     time_in_seconds = current_time.hour * 3600 + current_time.minute * 60 + current_time.second
 
-    today_sunrise_in_seconde = (today_sunrise.hour + 1) * 3600 + today_sunrise.minute * 60 + today_sunrise.second
-    today_sunset_in_seconde = (today_sunset.hour + 1) * 3600 + today_sunset.minute * 60 + today_sunset.second
+    today_sunrise_in_seconde = (today_sunrise.hour + utc_offset) * 3600 \
+        + today_sunrise.minute * 60 + today_sunrise.second
+    today_sunset_in_seconde = (today_sunset.hour + utc_offset) * 3600 \
+        + today_sunset.minute * 60 + today_sunset.second
 
     day_start = 6 * 3600
     day_end = today_sunrise_in_seconde + day_duration * 3600
@@ -52,10 +78,14 @@ def second_duration(current_time, day_duration, night_duration, latitude, longit
     else:
         return 1 - amplitude * modulation  # Secondes plus longues le jour
 
-def get_fictif_hour(current_time, day_duration, night_duration, latitude, longitude):
+
+def get_fictif_hour(current_time, day_duration, night_duration, latitude,
+                    longitude, timezone, utc_offset):
     sun = Sun(latitude, longitude)
-    today_sunrise = sun.get_local_sunrise_time(current_time) + timedelta(hours=1)
-    today_sunset = sun.get_local_sunset_time(current_time + timedelta(days=1)) + timedelta(hours=1)
+    today_sunrise = sun.get_local_sunrise_time(current_time)
+    today_sunrise = today_sunrise.astimezone(timezone)
+    today_sunset = sun.get_local_sunset_time(current_time + timedelta(days=1))
+    today_sunset = today_sunset.astimezone(timezone)
 
     if current_time > today_sunset:
         delta_in_seconds = (current_time - today_sunset).seconds
@@ -68,16 +98,18 @@ def get_fictif_hour(current_time, day_duration, night_duration, latitude, longit
     seconds_list = []
     for i in range(0, delta_in_hours):
         time_ = today_sunset + timedelta(hours=i)
-        duration = second_duration(time_, day_duration, night_duration, latitude, longitude)
+        duration = second_duration(time_, day_duration, night_duration,
+                                   latitude, longitude, utc_offset)
         if i < delta_in_hours - 1:
             seconds_list += [duration] * 3600
         else:
             seconds_list += [duration] * (delta_in_hours - (delta_in_hours-1) * 3600)
-    
+
     delta_seconds_fictif = sum(seconds_list)
     fictif_hour = base_time + timedelta(seconds=delta_seconds_fictif)
 
     return fictif_hour
+
 
 # Clock visualization
 def plot_clock(hours, minutes, seconds):
@@ -92,7 +124,7 @@ def plot_clock(hours, minutes, seconds):
 
     ax.scatter(0, 0, s=1000000, color="lightgray", zorder=1)
     ax.set_xticks(np.linspace(0, 2 * np.pi, 12, endpoint=False))
-    ax.set_xticklabels(range(1,13))
+    ax.set_xticklabels(range(1, 13))
     ax.set_theta_direction(-1)
     ax.set_theta_offset(np.pi / 3.0)
     ax.grid(False)
@@ -108,7 +140,6 @@ def plot_clock(hours, minutes, seconds):
         angle = 2 * np.pi * i / 12
         ax.plot([angle, angle], [0.9, 1.0], color="black", lw=1, zorder=2)
 
-    
     ax.plot(0, 0, marker="o", color="black", markersize=10, zorder=3)
     # Title
     ax.set_title(

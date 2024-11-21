@@ -5,3 +5,4 @@ numpy==2.1.3
 pandas==2.2.3
 jupyter==1.1.1
 matplotlib==3.9.2
+timezonefinder==6.5.5
