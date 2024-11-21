@@ -22,7 +22,7 @@ This Python project simulates a **fictional clock** where the sun invariably ris
   - `streamlit`
   - `pandas`
   - `numpy`
-  - `datetime`
+  - `suntime`
   - `math`
 
 Install the dependencies using:
