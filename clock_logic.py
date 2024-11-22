@@ -115,18 +115,18 @@ def get_fictif_hour(current_time, day_duration, night_duration, latitude,
 def plot_clock(hours, minutes, seconds):
     """Trace une horloge circulaire avec des aiguilles pour heures, minutes, secondes."""
     # Calculate angles for hour, minute, and second hands
-    second_angle = 2 * np.pi * seconds / 60
-    minute_angle = 2 * np.pi * (minutes + seconds / 60) / 60
-    hour_angle = 2 * np.pi * ((hours % 12) + minutes / 60) / 12
+    second_angle = 2 * math.pi * seconds / 60
+    minute_angle = 2 * math.pi * (minutes + seconds / 60) / 60 - math.pi/6.0
+    hour_angle = 2 * math.pi * ((hours % 12) + minutes / 60) / 12 - math.pi/6.0
 
     # Plot clock face
     fig, ax = plt.subplots(figsize=(4, 4), subplot_kw={"projection": "polar"})
 
     ax.scatter(0, 0, s=1000000, color="lightgray", zorder=1)
-    ax.set_xticks(np.linspace(0, 2 * np.pi, 12, endpoint=False))
+    ax.set_xticks(np.linspace(0, 2 * math.pi, 12, endpoint=False))
     ax.set_xticklabels(range(1, 13))
     ax.set_theta_direction(-1)
-    ax.set_theta_offset(np.pi / 3.0)
+    ax.set_theta_offset(math.pi / 3.0)
     ax.grid(False)
     ax.set_yticks([])
 
@@ -137,7 +137,7 @@ def plot_clock(hours, minutes, seconds):
 
     # Add clock face markers
     for i in range(12):
-        angle = 2 * np.pi * i / 12
+        angle = 2 * math.pi * i / 12
         ax.plot([angle, angle], [0.9, 1.0], color="black", lw=1, zorder=2)
 
     ax.plot(0, 0, marker="o", color="black", markersize=10, zorder=3)
