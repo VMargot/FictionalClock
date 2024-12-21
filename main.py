@@ -34,6 +34,8 @@ st.sidebar.write(f"Night duration: {night_duration:.2f} hours")
 placeholder = st.empty()
 while True:
     current_time = datetime.now(timezone)
+    current_time = current_time.replace(year=date.year, month=date.month, day=date.day)
+    print(current_time)
     with placeholder.container():
         fig = plot_clock(fictif_time.hour, fictif_time.minute,
                          fictif_time.second)
