@@ -17,8 +17,9 @@ This Python project simulates a **fictional clock** where the sun invariably ris
 
 ## **Requirements**
 
-- Python 3.8+
-- Required libraries:
+- Docker (optional for containerized deployment)
+- Python 3.11+ (if running without Docker)
+- Required libraries (if using Python):
   - `streamlit`
   - `pandas`
   - `numpy`
@@ -26,19 +27,32 @@ This Python project simulates a **fictional clock** where the sun invariably ris
   - `pytz`
   - `timezonefinder`
 
-Install the dependencies using:
 
-```bash
-pip install -r requirements.txt
-```
 ---
 
 ## **Usage**
 ### **1. Running the Clock**
 Run the Streamlit app to view the real-time fictional clock:
+#### **Using Python**
+Install the dependencies using:
+```bash
+pip install -r requirements.txt
+```
+Run the application:
 ```bash
 streamlit run main.py
 ```
+#### **Using Docker**
+Build the Docker image:
+```bash
+docker build -t fictional-clock .
+```
+
+Run the container:
+```bash
+docker run -p 8501:8501 fictional-clock
+```
+Open your browser and navigate to http://localhost:8501 to access the application.
 
 ### **2. Functions Overview**
 **Core Functions**
@@ -88,7 +102,7 @@ print(f"Fictional Time: {fictif_time}")
 ├── 📄 clock_logic.py &nbsp; &nbsp; &nbsp; # Core logic for time adjustments<br>
 ├── 📄 requirements.txt &nbsp; # Python dependencies<br>
 └── 📄 README.md &nbsp; &nbsp; &nbsp; &nbsp; # Project documentation<br>
-
+└── 📄 Dockerfile &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; # Dockerfile for containerized<br>
 ---
 
 ## **Contributing**
